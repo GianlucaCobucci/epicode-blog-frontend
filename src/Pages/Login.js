@@ -1,56 +1,59 @@
-import React from 'react'
+import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { useState } from 'react';
 
 const Login = () => {
+  const [formData, setFormData] = useState({ email: '', password: '' });
 
-  const [formData, setFormData] = useState({})
-  console.log(formData)
   const post = async (e) => {
     e.preventDefault();
     try {
-      const req = await fetch('http://localhost:5050/login',{
+      const req = await fetch('http://localhost:5050/login', {
         method: 'POST',
-        body: JSON.stringify(formData)
-      })
-      return await req.json()
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (req.status === 200) {
+        const user = await req.json();
+        console.log('Utente loggato: ', user);
+      } else {
+        const error = await req.json();
+        console.log('Errore: ', error.message);
+      }
     } catch (error) {
-      console.log(error)
+      console.log('Errore: ', error);
     }
-  }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   return (
-    <>  
-        <Form className='m-5' onSubmit={post}>
-
-            <Form.Control
-              onChange={(e)=>setFormData({
-                ...formData,
-                email:e.target.value
-              })}
-              type="email"
-              placeholder="Inserisci mail..."
-              className="my-2"
-              aria-label="email"
-            />
-            <Form.Control
-              onChange={(e)=>setFormData({
-                ...formData,
-                password:e.target.value
-              })}
-              type="password"
-              placeholder="Inserisci password..."
-              className="my-2"
-              aria-label="password"
-            />
-            <Button type="Submit">
-            Login
-            </Button>
-        </Form>
-    
+    <>
+      <Form className="m-5" onSubmit={post}>
+        <Form.Control
+          onChange={handleInputChange}
+          name="email"
+          type="email"
+          placeholder="Inserisci mail..."
+          className="my-2"
+        />
+        <Form.Control
+          onChange={handleInputChange}
+          name="password"
+          type="password"
+          placeholder="Inserisci password..."
+          className="my-2"
+        />
+        <Button type="submit">Login</Button>
+      </Form>
     </>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
