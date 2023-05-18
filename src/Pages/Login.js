@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const navigate = useNavigate();
+  useEffect(()=>{
+    const user = JSON.parse(localStorage.getItem("loggedIn"));
+    console.log(user)
+    if (user && user.email && user.email.length > 0) {
+      navigate("../homepage", {replace: true})
+    }
+  },[navigate])
 
   const post = async (e) => {
     e.preventDefault();
@@ -16,13 +25,16 @@ const Login = () => {
         body: JSON.stringify(formData),
       });
 
+      const user = await req.json();
       if (req.status === 200) {
-        const user = await req.json();
-        console.log('Utente loggato: ', user);
+        localStorage.setItem("loggedIn", JSON.stringify(user))
+        navigate("/homepage")
+        //console.log('Utente loggato: ', user);
       } else {
         const error = await req.json();
         console.log('Errore: ', error.message);
       }
+      return user;  
     } catch (error) {
       console.log('Errore: ', error);
     }
@@ -35,6 +47,9 @@ const Login = () => {
 
   return (
     <>
+      <div className='d-flex justify-content-center mt-5'>
+        <img src='https://www.freeiconspng.com/thumbs/login-icon/user-login-icon-29.png' alt='immagine-login'/>
+      </div>
       <Form className="m-5" onSubmit={post}>
         <Form.Control
           onChange={handleInputChange}
