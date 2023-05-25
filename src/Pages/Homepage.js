@@ -1,11 +1,67 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import '../Styles/Homepage.css'
+import { useDispatch, useSelector } from "react-redux";
+import { getPosts, postsArray, postsLoading, totalPostsCount } from "../Reducers/postsSlice";
+import SingleCard from "../Components/SingleCard";
+import { Container, Row, Col } from "react-bootstrap";
+import ReactPaginate from "react-paginate";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+const pageSize = 4;
 
 const Homepage = () => {
-  return (
-    <div>
-      Questa è l'Homepage
-    </div>
-  )
-}
+  const dispatch = useDispatch();
+  const isLoading = useSelector(postsLoading);
+  const allPosts = useSelector(postsArray);
+  const totalPosts = useSelector(totalPostsCount);
+  const [page, setPage] = useState(1);
 
-export default Homepage
+  useEffect(() => {
+    dispatch(getPosts({ page, pageSize, sortBy: 'views' }));
+  }, [dispatch, page]);
+
+  const handlePageClick = (data) => {
+    let selected = data.selected;
+    setPage(selected + 1);
+  };
+
+  return (
+    <>
+      <div className="centered-content">
+        <h1>I post più visti</h1>
+        <Container className="shadow">
+          <Row>
+            <Col className="d-flex flex-wrap gap-3 mt-3 mb-5" lg={12}>
+              {allPosts && allPosts.map((item) => (
+                <SingleCard
+                  key={item._id}
+                  id={item._id}
+                  title={item.title}
+                  img={item.img}
+                  content={item.content}
+                  author={item.author}
+                  rate={item.rate}
+                />
+              ))}
+            </Col>
+          </Row>
+          <ReactPaginate
+            previousLabel={'Precedente'}
+            nextLabel={'Successivo'}
+            breakLabel={'...'}
+            breakClassName={'break-me'}
+            pageCount={Math.ceil(totalPosts / pageSize)}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            subContainerClassName={'pages pagination'}
+            activeClassName={'active'}
+          />
+        </Container>
+      </div>
+    </>
+  );
+};
+
+export default Homepage;

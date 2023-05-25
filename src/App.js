@@ -4,6 +4,7 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import Homepage from './Pages/Homepage';
 import ProtectedRoutes from './middleware/ProtectedRoutes';
 import UsersList from './Pages/UsersList';
+import Posts from './Pages/Posts';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route exact path='/' element={<Login/>} />
         <Route path='/users' element={<UsersList/>}/>
+        <Route path='/posts' element={<Posts/>}/>
         <Route element={<ProtectedRoutes/>}>{/* qui dentro ci vanno le routes che io voglio proteggere da autenticazione*/}
           {/* quindi se nel localStorage non ci sarà la chiave true, verremo redirectati alla login page */}
           <Route path='/homepage' element={<Homepage/>}/> 

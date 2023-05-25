@@ -1,0 +1,26 @@
+/* Homepage.css */
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+  }
+  
+  .pagination > .active > a {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+  }
+  
+  .pagination > li > a {
+    border: 1px solid #007bff;
+    color: #007bff;
+    padding: 5px 10px;
+  }
+
+  .centered-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  

@@ -5,9 +5,12 @@ import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Provider } from 'react-redux';
 import {combineReducers, configureStore} from '@reduxjs/toolkit'
+import loginReducer from './Reducers/loginSlice'
+import postsReducer from './Reducers/postsSlice'
 
 const reducer = combineReducers({
-
+  loginState: loginReducer,
+  postsState: postsReducer
 })
 
 const store = configureStore({
